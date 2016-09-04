@@ -99,6 +99,9 @@
 #endif
 
 #include "bthost_ipc.h"
+#ifdef BLUETOOTH_RTK_COEX
+#include "rtk_parse.h"
+#endif
 #if (BTA_AV_SINK_INCLUDED == TRUE)
 OI_CODEC_SBC_DECODER_CONTEXT context;
 OI_UINT32 contextData[CODEC_DATA_WORDS(2, SBC_CODEC_FAST_FILTER_BUFFERS)];
@@ -209,13 +212,13 @@ enum {
 
 #ifdef BTA_AV_SPLIT_A2DP_DEF_FREQ_48KHZ
 #define BTIF_A2DP_DEFAULT_BITRATE 345
-
 #ifndef BTIF_A2DP_NON_EDR_MAX_RATE
 #define BTIF_A2DP_NON_EDR_MAX_RATE 237
 #endif
+#ifdef BLUETOOTH_RTK
+#define BTIF_A2DP_DEFAULT_BITRATE 229
 #else
 #define BTIF_A2DP_DEFAULT_BITRATE 328
-
 #ifndef BTIF_A2DP_NON_EDR_MAX_RATE
 #define BTIF_A2DP_NON_EDR_MAX_RATE 229
 #endif
@@ -2740,6 +2743,9 @@ static void btif_media_task_enc_init(BT_HDR *p_msg)
             btif_media_cb.encoder.s16NumOfBlocks,
             btif_media_cb.encoder.s16AllocationMethod, btif_media_cb.encoder.u16BitRate,
             btif_media_cb.encoder.s16SamplingFreq);
+#ifdef BLUETOOTH_RTK_COEX
+        rtk_parse_manager_get_interface()->rtk_add_bitpool_to_fw(btif_media_cb.encoder.s16BitPool);
+#endif
 
     if (!bt_split_a2dp_enabled)
     {

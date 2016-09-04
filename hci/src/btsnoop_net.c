@@ -77,6 +77,9 @@ static int local_socket_create(void) {
 }
 
 void btsnoop_net_open() {
+#if (!defined(BT_NET_DEBUG) || (BT_NET_DEBUG != TRUE))
+  return;               // Disable using network sockets for security reasons
+#endif
 
   listen_thread_valid_ = (pthread_create(&listen_thread_, NULL, listen_fn_, NULL) == 0);
   if (!listen_thread_valid_) {
@@ -87,6 +90,9 @@ void btsnoop_net_open() {
 }
 
 void btsnoop_net_close() {
+#if (!defined(BT_NET_DEBUG) || (BT_NET_DEBUG != TRUE))
+  return;               // Disable using network sockets for security reasons
+#endif
 
   if (listen_thread_valid_) {
 #if (defined(BT_NET_DEBUG) && (NET_DEBUG == TRUE))
@@ -101,8 +107,10 @@ void btsnoop_net_close() {
 }
 
 void btsnoop_net_write(const void *data, size_t length) {
+#if (!defined(BT_NET_DEBUG) || (BT_NET_DEBUG != TRUE))
+  return;               // Disable using network sockets for security reasons
+#endif
   ssize_t ret;
-
   pthread_mutex_lock(&client_socket_lock_);
   if (client_socket_btsnoop != -1) {
     do {

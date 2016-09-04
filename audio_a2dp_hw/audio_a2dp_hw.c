@@ -737,6 +737,7 @@ static ssize_t out_write(struct audio_stream_out *stream, const void* buffer,
     }
     #endif
 
+D
     if (sent == -1)
     {
 #ifdef BT_HOST_IPC_ENABLED
@@ -752,6 +753,10 @@ static ssize_t out_write(struct audio_stream_out *stream, const void* buffer,
             ERROR("write failed : stream suspended, avoid resetting state");
         }
         goto finish;
+    } else {
+        const size_t frames = bytes / audio_stream_out_frame_size(stream);
+        out->frames_rendered += frames;
+        out->frames_presented += frames;
     }
 
 finish: ;

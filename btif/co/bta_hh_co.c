@@ -164,6 +164,12 @@ static int uhid_write(int fd, const struct uhid_event *ev)
 {
     ssize_t ret;
     OSI_NO_INTR(ret = write(fd, ev, sizeof(*ev)));
+=======
+/*Internal function to perform UHID write and error checking*/
+static int uhid_write(int fd, const struct uhid_event *ev)
+{
+    ssize_t ret = write(fd, ev, sizeof(*ev));
+>>>>>>> ade326b9... Allwinner A64 changes
 
     if (ret < 0){
         int rtn = -errno;

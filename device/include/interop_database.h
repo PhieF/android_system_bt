@@ -65,11 +65,11 @@ static const interop_addr_entry_t interop_addr_database[] = {
   // LG Tone HV-800 - unacceptably loud volume
   {{{0xa0, 0xe9, 0xdb,      0,0,0}}, 3, INTEROP_DISABLE_ABSOLUTE_VOLUME},
 
-  // Motorola Key Link
-  {{{0x1c, 0x96, 0x5a,      0,0,0}}, 3, INTEROP_DISABLE_LE_SECURE_CONNECTIONS},
-
   // Mpow Cheetah - unacceptably loud volume
   {{{0x00, 0x11, 0xb1,      0,0,0}}, 3, INTEROP_DISABLE_ABSOLUTE_VOLUME},
+
+  // Flic smart button
+  {{0x80, 0xe4, 0xda, 0x70,   0,0}, 4, INTEROP_DISABLE_LE_SECURE_CONNECTIONS},
 
   // Nissan car kits (ALPS) - auto-pairing fails and rejects next pairing
   {{{0x34, 0xc7, 0x31,      0,0,0}}, 3, INTEROP_DISABLE_AUTO_PAIRING},

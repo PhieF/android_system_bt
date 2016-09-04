@@ -143,7 +143,8 @@ static const btsnoop_t *btsnoop;
 static const hci_hal_t *hal;
 
 #ifdef BLUETOOTH_RTK
-static const tHCI_IF *hci_h5;
+const tHCI_IF hci_h5_func_table;
+static const tHCI_IF *hci_h5 = &hci_h5_func_table;
 char bt_hci_device_node[BT_HCI_DEVICE_NODE_MAX_LEN] = {0};
 bool bluetooth_rtk_h5_flag = FALSE;//Default Usb H4 Interfcace ,if ture Uart H5 Interface
 extern const hci_hal_t *hci_get_h5_interface();
@@ -1158,9 +1159,6 @@ const hci_t *hci_layer_get_interface() {
   packet_fragmenter = packet_fragmenter_get_interface();
   vendor = vendor_get_interface();
   low_power_manager = low_power_manager_get_interface();
-#ifdef BLUETOOTH_RTK
-  hci_h5 =  hci_get_h5_interface();
-#endif
 #ifdef BLUETOOTH_RTK_COEX
   rtk_parse_manager = rtk_parse_manager_get_interface();
 #endif

@@ -147,6 +147,7 @@ const tHCI_IF hci_h5_func_table;
 static const tHCI_IF *hci_h5 = &hci_h5_func_table;
 char bt_hci_device_node[BT_HCI_DEVICE_NODE_MAX_LEN] = {0};
 bool bluetooth_rtk_h5_flag = FALSE;//Default Usb H4 Interfcace ,if ture Uart H5 Interface
+extern const hci_hal_t *hci_get_h5_interface();
 #endif
 static const hci_hal_callbacks_t hal_callbacks;
 static const hci_inject_t *hci_inject;
@@ -903,6 +904,10 @@ static bool filter_incoming_event(BT_HDR *packet) {
 
   if (event_code == HCI_COMMAND_COMPLETE_EVT) {
     STREAM_TO_UINT8(command_credits, stream);
+#ifdef BLUETOOTH_RTK
+    if(command_credits > 0)
+        command_credits = 1;
+#endif
     STREAM_TO_UINT16(opcode, stream);
 
     if (HCI_RESET == opcode) {
@@ -927,6 +932,11 @@ static bool filter_incoming_event(BT_HDR *packet) {
     uint8_t status;
     STREAM_TO_UINT8(status, stream);
     STREAM_TO_UINT8(command_credits, stream);
+#ifdef BLUETOOTH_RTK
+    if(command_credits > 0)
+        command_credits = 1;
+#endif
+
     STREAM_TO_UINT16(opcode, stream);
 
     // If a command generates a command status event, it won't be getting a command complete event
@@ -946,11 +956,7 @@ intercepted:
   update_command_response_timer();
   if (wait_entry) {
     // If it has a callback, it's responsible for freeing the packet
-#ifdef BLUETOOTH_RTK
-    if (event_code == HCI_COMMAND_STATUS_EVT && (!wait_entry->complete_callback && !wait_entry->complete_future))
-#else
-	if (event_code == HCI_COMMAND_STATUS_EVT || (!wait_entry->complete_callback && !wait_entry->complete_future))
-#endif
+    if (event_code == HCI_COMMAND_STATUS_EVT || (!wait_entry->complete_callback && !wait_entry->complete_future))
       buffer_allocator->free(packet);
 
     // If it has a callback, it's responsible for freeing the command
@@ -1156,6 +1162,10 @@ const hci_t *hci_layer_get_interface() {
   packet_fragmenter = packet_fragmenter_get_interface();
   vendor = vendor_get_interface();
   low_power_manager = low_power_manager_get_interface();
+#ifdef BLUETOOTH_RTK
+  hci_h5 =  hci_get_h5_interface();
+#endif
+
 #ifdef BLUETOOTH_RTK_COEX
   rtk_parse_manager = rtk_parse_manager_get_interface();
 #endif

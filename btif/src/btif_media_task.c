@@ -93,15 +93,13 @@
 #include "oi_codec_sbc.h"
 #include "oi_status.h"
 #endif
-
-#ifdef USE_AUDIO_TRACK
-#include "btif_avrcp_audio_track.h"
-#endif
-
-#include "bthost_ipc.h"
 #ifdef BLUETOOTH_RTK_COEX
 #include "rtk_parse.h"
 #endif
+#ifdef USE_AUDIO_TRACK
+#include "btif_avrcp_audio_track.h"
+#endif
+#include "bthost_ipc.h"
 #if (BTA_AV_SINK_INCLUDED == TRUE)
 OI_CODEC_SBC_DECODER_CONTEXT context;
 OI_UINT32 contextData[CODEC_DATA_WORDS(2, SBC_CODEC_FAST_FILTER_BUFFERS)];
@@ -210,12 +208,6 @@ enum {
 #define BTIF_MEDIA_BITRATE_STEP 5
 #endif
 
-#ifdef BLUETOOTH_RTK
-#define BTIF_A2DP_DEFAULT_BITRATE 229
-#ifndef BTIF_A2DP_NON_EDR_MAX_RATE
-#define BTIF_A2DP_NON_EDR_MAX_RATE 229
-#endif
-#else
 #ifdef BTA_AV_SPLIT_A2DP_DEF_FREQ_48KHZ
 #define BTIF_A2DP_DEFAULT_BITRATE 345
 #ifndef BTIF_A2DP_NON_EDR_MAX_RATE
@@ -227,7 +219,7 @@ enum {
 #define BTIF_A2DP_NON_EDR_MAX_RATE 229
 #endif
 #endif
-#endif
+
 #if (BTA_AV_CO_CP_SCMS_T == TRUE)
 /* A2DP header will contain a CP header of size 1 */
 #define A2DP_HDR_SIZE               2
@@ -2747,15 +2739,14 @@ static void btif_media_task_enc_init(BT_HDR *p_msg)
             btif_media_cb.encoder.s16NumOfBlocks,
             btif_media_cb.encoder.s16AllocationMethod, btif_media_cb.encoder.u16BitRate,
             btif_media_cb.encoder.s16SamplingFreq);
-#ifdef BLUETOOTH_RTK_COEX
-        rtk_parse_manager_get_interface()->rtk_add_bitpool_to_fw(btif_media_cb.encoder.s16BitPool);
-#endif
 
     if (!bt_split_a2dp_enabled)
     {
         /* Reset entirely the SBC encoder */
         SBC_Encoder_Init(&(btif_media_cb.encoder));
-
+#ifdef BLUETOOTH_RTK_COEX
+        rtk_parse_manager_get_interface()->rtk_add_bitpool_to_fw(btif_media_cb.encoder.s16BitPool);
+#endif
         btif_media_cb.tx_sbc_frames = calculate_max_frames_per_packet();
 
         APPL_TRACE_DEBUG("btif_media_task_enc_init bit pool %d", btif_media_cb.encoder.s16BitPool);

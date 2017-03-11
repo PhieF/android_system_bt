@@ -8,7 +8,6 @@ rtkbt_bdroid_C_INCLUDES += $(LOCAL_PATH)/bta/dm
 rtkbt_bdroid_CFLAGS += -DBLUETOOTH_RTK
 rtkbt_bdroid_CFLAGS += -DBLUETOOTH_RTK_API
 
-
 ifeq ($(BOARD_HAVE_BLUETOOTH_RTK_COEX),true)
 rtkbt_bdroid_CFLAGS += -DBLUETOOTH_RTK_COEX
 endif
@@ -59,6 +58,18 @@ bluetooth_CFLAGS += -DEXPORT_SYMBOL="__attribute__((visibility(\"default\")))"
 # -Wno-unused-parameter is needed, because there are too many unused
 #  parameters in all the code.
 #
+ifeq ($(BOARD_HAVE_BLUETOOTH_RTK),true)
+bluetooth_CFLAGS += \
+  -fvisibility=hidden \
+  -Wall \
+  -Wextra \
+  -Wno-gnu-variable-sized-type-not-at-end \
+  -Wno-typedef-redefinition \
+  -Wno-unused-parameter \
+  -Wunused-but-set-variable \
+  -UNDEBUG \
+  -DLOG_NDEBUG=1
+else
 bluetooth_CFLAGS += \
   -fvisibility=hidden \
   -Wall \
@@ -69,7 +80,7 @@ bluetooth_CFLAGS += \
   -Wno-unused-parameter \
   -UNDEBUG \
   -DLOG_NDEBUG=1
-
+endif
 ifeq ($(strip $(AUDIO_FEATURE_ENABLED_SPLIT_A2DP)),true)
 bluetooth_CFLAGS += -DBTA_AV_SPLIT_A2DP_ENABLED
 bluetooth_CFLAGS += -DBTA_AV_SPLIT_A2DP_DEF_FREQ_48KHZ

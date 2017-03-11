@@ -32,7 +32,6 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <time.h>
-#include <bt_types.h>
 
 #include <hardware/bluetooth.h>
 
@@ -69,15 +68,13 @@
 #else  // !defined(OS_GENERIC)
 #define BTE_BLE_STACK_CONF_FILE "/etc/bluetooth/ble_stack.conf"
 #endif  // defined(OS_GENERIC)
-#endif  // BT_BLE_STACK_CONF_FILE
 
+#endif  // BT_BLE_STACK_CONF_FILE
 #ifdef BLUETOOTH_RTK
 #ifndef BTE_RTK_CONF_FILE
 #define BTE_RTK_CONF_FILE "/etc/bluetooth/rtkbt.conf"
 #endif
-void bte_load_rtkbt_conf(const char *path);
 #endif
-
 /******************************************************************************
 **  Variables
 ******************************************************************************/

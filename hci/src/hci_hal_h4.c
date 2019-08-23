@@ -119,11 +119,6 @@ static bool hal_open() {
 
   // Raise thread priorities to keep up with audio
   thread_set_priority(thread, HCI_THREAD_PRIORITY);
-  eager_reader_register(uart_stream, thread_get_reactor(thread), event_uart_has_bytes, NULL);
-
-  // Raise thread priorities to keep up with audio
-  thread_set_priority(thread, HCI_THREAD_PRIORITY);
-  thread_set_priority(eager_reader_get_read_thread(uart_stream), HCI_THREAD_PRIORITY);
 
   return true;
 

@@ -1131,8 +1131,7 @@ void bta_gattc_read_multi(tBTA_GATTC_CLCB *p_clcb, tBTA_GATTC_DATA *p_data)
 {
     tBTA_GATT_STATUS    status = BTA_GATT_OK;
     tGATT_READ_PARAM    read_param;
-    tBTA_GATTC_ATTR_ID  *p_id;
-
+    
     if (bta_gattc_enqueue(p_clcb, p_data))
     {
         memset(&read_param, 0, sizeof(tGATT_READ_PARAM));

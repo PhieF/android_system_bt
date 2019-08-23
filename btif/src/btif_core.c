@@ -137,6 +137,7 @@ static BOOLEAN ssr_triggered = FALSE;
 **  Static functions
 ************************************************************************************/
 static void btif_jni_associate(UNUSED_ATTR uint16_t event, UNUSED_ATTR char *p_param);
+static void btif_jni_disassociate();
 static bool btif_fetch_property(const char *key, bt_bdaddr_t *addr);
 
 /* sends message to btif task */

@@ -2279,11 +2279,6 @@ void bta_hh_le_input_rpt_notify(tBTA_GATTC_NOTIFY *p_data)
         data_type = p_rpt->rpt_id;
 		rtk_parse_manager_get_interface()->rtk_add_le_data_count(data_type);
 #endif
-        if ((p_buf = (UINT8 *)GKI_getbuf((UINT16)(p_data->len + 1))) == NULL)
-        {
-            APPL_TRACE_ERROR("No resources to send report data");
-            return;
-        }
 
         p_buf[0] = p_rpt->rpt_id;
         memcpy(&p_buf[1], p_data->value, p_data->len);

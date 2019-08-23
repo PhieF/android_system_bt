@@ -742,7 +742,7 @@ static void hal_says_data_ready(serial_data_type_t type) {
   uint8_t byte;
 #ifdef BLUETOOTH_RTK
   if(bluetooth_rtk_h5_flag){
-          while(hal->read_data(type, &byte, 1, false) != 0) {
+          while(hal->read_data(type, &byte, 1) != 0) {
           hci_h5->rcv(&byte);
           } 
    } else {   
@@ -944,8 +944,6 @@ static bool filter_incoming_event(BT_HDR *packet) {
 
 intercepted:
   update_command_response_timer();
-
-intercepted:;
   if (wait_entry) {
     // If it has a callback, it's responsible for freeing the packet
 #ifdef BLUETOOTH_RTK

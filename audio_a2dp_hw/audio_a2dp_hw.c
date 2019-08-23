@@ -737,7 +737,6 @@ static ssize_t out_write(struct audio_stream_out *stream, const void* buffer,
     }
     #endif
 
-D
     if (sent == -1)
     {
 #ifdef BT_HOST_IPC_ENABLED

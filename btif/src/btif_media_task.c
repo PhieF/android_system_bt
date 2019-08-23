@@ -210,20 +210,24 @@ enum {
 #define BTIF_MEDIA_BITRATE_STEP 5
 #endif
 
+#ifdef BLUETOOTH_RTK
+#define BTIF_A2DP_DEFAULT_BITRATE 229
+#ifndef BTIF_A2DP_NON_EDR_MAX_RATE
+#define BTIF_A2DP_NON_EDR_MAX_RATE 229
+#endif
+#else
 #ifdef BTA_AV_SPLIT_A2DP_DEF_FREQ_48KHZ
 #define BTIF_A2DP_DEFAULT_BITRATE 345
 #ifndef BTIF_A2DP_NON_EDR_MAX_RATE
 #define BTIF_A2DP_NON_EDR_MAX_RATE 237
 #endif
-#ifdef BLUETOOTH_RTK
-#define BTIF_A2DP_DEFAULT_BITRATE 229
-#else
+#else 
 #define BTIF_A2DP_DEFAULT_BITRATE 328
 #ifndef BTIF_A2DP_NON_EDR_MAX_RATE
 #define BTIF_A2DP_NON_EDR_MAX_RATE 229
 #endif
 #endif
-
+#endif
 #if (BTA_AV_CO_CP_SCMS_T == TRUE)
 /* A2DP header will contain a CP header of size 1 */
 #define A2DP_HDR_SIZE               2

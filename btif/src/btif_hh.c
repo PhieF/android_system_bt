@@ -43,6 +43,9 @@
 #include "bt_common.h"
 #include "l2c_api.h"
 #include "osi/include/log.h"
+#ifdef BLUETOOTH_RTK_COEX
+#include "btm_int.h"
+#endif
 
 #define BTIF_HH_APP_ID_MI       0x01
 #define BTIF_HH_APP_ID_KB       0x02
@@ -50,6 +53,7 @@
 #define COD_HID_KEYBOARD        0x0540
 #define COD_HID_POINTING        0x0580
 #define COD_HID_COMBO           0x05C0
+#define COD_HID_MAJOR           0x0500
 
 #define KEYSTATE_FILEPATH "/data/misc/bluedroid/bt_hh_ks" //keep this in sync with HID host jni
 
@@ -805,6 +809,23 @@ static void btif_hh_upstreams_evt(UINT16 event, char* p_param)
                     btif_hh_cb.p_curr_dev = btif_hh_find_connected_dev_by_handle(p_data->conn.handle);
                     BTA_HhGetDscpInfo(p_data->conn.handle);
                     p_dev->dev_status = BTHH_CONN_STATE_CONNECTED;
+#ifdef BLUETOOTH_RTK_COEX
+                    tBTM_SEC_DEV_REC *p_dev_rec = btm_find_dev (p_data->conn.bda);
+                    if ((p_dev_rec != NULL) &&((p_dev_rec->device_type &= BT_DEVICE_TYPE_BLE) == 0x02))
+                    {
+                        bt_property_t remote_ble_property;
+                        uint8_t  profile_map =0;
+                        btif_storage_get_remote_device_property((bt_bdaddr_t*)p_data->conn.bda, &remote_ble_property);
+                        if (check_cod((bt_bdaddr_t*)p_data->conn.bda, COD_HID_COMBO))
+                            profile_map |= 0x03;
+                        if (check_cod((bt_bdaddr_t*)p_data->conn.bda, COD_HID_KEYBOARD ))
+                            profile_map |= 0x02;
+                        if (check_cod((bt_bdaddr_t*)p_data->conn.bda, COD_HID_MAJOR))
+                            profile_map |= 0x01;
+                        p_dev_rec->profile_map = profile_map;
+						rtk_parse_manager_get_interface()->rtk_add_le_profile(p_data->conn.bda,  p_dev_rec->hci_handle, profile_map);
+                    }
+#endif
                     HAL_CBACK(bt_hh_callbacks, connection_state_cb,&(p_dev->bd_addr), p_dev->dev_status);
                 }
             }

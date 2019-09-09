@@ -93,7 +93,9 @@
 #include "oi_codec_sbc.h"
 #include "oi_status.h"
 #endif
-
+#ifdef BLUETOOTH_RTK_COEX
+#include "rtk_parse.h"
+#endif
 #ifdef USE_AUDIO_TRACK
 #include "btif_avrcp_audio_track.h"
 #endif
@@ -2745,7 +2747,9 @@ static void btif_media_task_enc_init(BT_HDR *p_msg)
     {
         /* Reset entirely the SBC encoder */
         SBC_Encoder_Init(&(btif_media_cb.encoder));
-
+#ifdef BLUETOOTH_RTK_COEX
+    rtk_parse_manager_get_interface()->rtk_add_bitpool_to_fw(btif_media_cb.encoder.s16BitPool);
+#endif
         btif_media_cb.tx_sbc_frames = calculate_max_frames_per_packet();
 
         APPL_TRACE_DEBUG("btif_media_task_enc_init bit pool %d", btif_media_cb.encoder.s16BitPool);

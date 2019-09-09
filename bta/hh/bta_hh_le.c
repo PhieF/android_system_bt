@@ -36,6 +36,9 @@
 #include "stack/include/l2c_api.h"
 #include "utl.h"
 
+#ifdef BLUETOOTH_RTK_COEX
+#include "rtk_parse.h"
+#endif
 #ifndef BTA_HH_LE_RECONN
 #define BTA_HH_LE_RECONN    TRUE
 #endif
@@ -2223,6 +2226,9 @@ void bta_hh_le_input_rpt_notify(tBTA_GATTC_NOTIFY *p_data)
     UINT8           *p_buf;
     tBTA_HH_LE_RPT  *p_rpt;
 
+#ifdef BLUETOOTH_RTK_COEX
+		UINT8	data_type = 0;
+#endif
     if (p_dev_cb == NULL)
     {
         APPL_TRACE_ERROR("%s: notification received from Unknown device, conn_id: 0x%04x",
@@ -2268,6 +2274,10 @@ void bta_hh_le_input_rpt_notify(tBTA_GATTC_NOTIFY *p_data)
     /* need to append report ID to the head of data */
     if (p_rpt->rpt_id != 0)
     {
+#ifdef BLUETOOTH_RTK_COEX
+        data_type = p_rpt->rpt_id;
+		rtk_parse_manager_get_interface()->rtk_add_le_data_count(data_type);
+#endif
         p_buf = (UINT8 *)osi_malloc(p_data->len + 1);
 
         p_buf[0] = p_rpt->rpt_id;

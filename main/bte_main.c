@@ -92,7 +92,7 @@ static const hci_t *hci;
 **  Externs
 *******************************************************************************/
 fixed_queue_t *btu_hci_msg_queue;
-
+extern void bte_load_rtkbt_conf(const char *p_path);
 /******************************************************************************
 **
 ** Function         bte_main_boot_entry
